@@ -72,7 +72,7 @@ flags.DEFINE_string(
     "A type of model. Possible options are: small, medium, large.")
 flags.DEFINE_string("data_path", None,
                     "Where the training/test data is stored.")
-flags.DEFINE_string("save_path", None,
+flags.DEFINE_string("save_path", "model/",
                     "Model output directory.")
 flags.DEFINE_bool("use_fp16", False,
                   "Train using 16-bit floats instead of 32bit floats")
@@ -310,7 +310,8 @@ def run_epoch(session, model, eval_op=None, verbose=False):
     vals = session.run(fetches, feed_dict)
     cost = vals["cost"]
     state = vals["final_state"]
-
+    
+    
     costs += cost
     iters += model.input.num_steps
 
@@ -347,7 +348,7 @@ def main(_):
   eval_config.batch_size = 1
   eval_config.num_steps = 1
   
-  gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.333)  
+  gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.8)  
   sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options)) 
 
   with tf.Graph().as_default():

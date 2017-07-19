@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 ##        (C) COPYRIGHT Ingenic Limited.
 ##             ALL RIGHTS RESERVED
 ##
@@ -12,22 +12,46 @@
 import numpy as np
 import tensorflow as tf
 
+import reader
+
+from ptb_word_lm import PTBModel
+from ptb_word_lm import get_config
+from ptb_word_lm import PTBInput
+from ptb_word_lm import run_epoch
+
 flags = tf.flags
 
-flags.DEFINE_string("graph", None, "Saved graph net")
-flags.DEFINE_string("weight", None, "Pretrained weights")
-flags.DEFINE_string("use_fp16", False, "Using 16-bit floats instead of 32bit floats")
+flags.DEFINE_string("dataset", "simple-examples/data/", "Where the training/test data is stored.")
+flags.DEFINE_string("weight", "model/", "Pretrained weights")
 
 FLAGS = flags.FLAGS
 
-def data_type():
-    return tf.float16 if FLAGS.use_fp16 else tf.float32
-
 def main(_):
+    config = get_config()
+    eval_config = get_config()
+    eval_config.batch_size = 1
+    eval_config.num_steps = 1
+    
+    initializer = tf.random_uniform_initializer(-config.init_scale,
+                                                 config.init_scale)
+    raw_data = reader.ptb_raw_data(FLAGS.dataset)
+    train_data, valid_data, test_data, _ = raw_data
+
+    # create graph
+    with tf.name_scope("Test"):
+        test_input = PTBInput(config=eval_config, data=test_data, name="TestInput")
+        with tf.variable_scope("Model", reuse=None, initializer=initializer):
+            mtest = PTBModel(is_training=False, config=eval_config, input_=test_input)
+    
+    # constraint GPU memory use
     gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.333)
-    with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options)) as session:
+    sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
+    
+    # auto load checkpoint form specific path
+    sv = tf.train.Supervisor(logdir=FLAGS.weight)
+    with sv.managed_session() as session:
+        test_perplexity = run_epoch(session, mtest)
+        print("Test Perplexity: %.3f" % test_perplexity)
         
-    
-    
-if __main__=="__main__":
+if __name__ == "__main__":
     tf.app.run()
