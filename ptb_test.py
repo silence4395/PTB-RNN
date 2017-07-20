@@ -78,7 +78,7 @@ def main(_):
     sv = tf.train.Supervisor(logdir=FLAGS.weight)
     with sv.managed_session() as session:
         test_perplexity = run_epoch(session, mtest)
-        print("Test Perplexity: %.3f, elapsed time: %.f" % test_perplexity, time.time()-start_time)
+        print("Test Perplexity: %.3f, elapsed time: %.f s" % (test_perplexity, time.time()-start_time))
         
 if __name__ == "__main__":
     tf.app.run()
