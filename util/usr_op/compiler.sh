@@ -1,0 +1,1 @@
+g++ -std=c++11 -shared sigmoid_diy.cpp  -o sigmoid_diy.so -fPIC -I /usr/local/lib/python2.7/dist-packages/tensorflow/include
