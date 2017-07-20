@@ -348,7 +348,8 @@ def main(_):
   eval_config.batch_size = 1
   eval_config.num_steps = 1
   
-  gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.8)  
+  #gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.8)  # large
+  gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.333) # small   
   sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options)) 
 
   with tf.Graph().as_default():
