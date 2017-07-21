@@ -9,6 +9,7 @@
 ## 
 ##
 import numpy as np
+import tensorflow as tf
 from tensorflow.python.framework import ops
 from tensorflow.python.ops import array_ops
 from tensorflow.python.ops import math_ops
@@ -17,6 +18,7 @@ from tensorflow.python.platform import tf_logging as logging
 from tensorflow.python.ops.rnn_cell_impl import RNNCell
 from tensorflow.python.ops.rnn_cell_impl import LSTMStateTuple
 from tensorflow.python.ops.rnn_cell_impl import _linear
+from tensorflow.python.framework import ops
 
 class BasicLSTMCell(RNNCell):
   """Basic LSTM recurrent network cell.
@@ -87,6 +89,8 @@ class BasicLSTMCell(RNNCell):
         `state_is_tuple`).
     """
     sigmoid = math_ops.sigmoid
+    lib_diy = tf.load_op_library('util/usr_op/sigmoid_diy.so')
+    
     # Parameters of gates are concatenated into one multiply for efficiency.
     if self._state_is_tuple:
       c, h = state
@@ -97,10 +101,17 @@ class BasicLSTMCell(RNNCell):
 
     # i = input_gate, j = new_input, f = forget_gate, o = output_gate
     i, j, f, o = array_ops.split(value=concat, num_or_size_splits=4, axis=1)
-    
+        
+    # modify by zhluo, 7/21/2017
     new_c = (
-        c * sigmoid(f + self._forget_bias) + sigmoid(i) * self._activation(j))
-    new_h = self._activation(new_c) * sigmoid(o)
+        c * lib_diy.sigmoid_diy(f + self._forget_bias) +
+        lib_diy.sigmoid_diy(i) * self._activation(j))
+    
+    new_h = self._activation(new_c) * lib_diy.sigmoid_diy(o)
+      
+    #new_c = (
+    #    c * sigmoid(f + self._forget_bias) + sigmoid(i) * self._activation(j))
+    #new_h = self._activation(new_c) * sigmoid(o)
 
     if self._state_is_tuple:
       new_state = LSTMStateTuple(new_c, new_h)

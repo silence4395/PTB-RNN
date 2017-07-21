@@ -37,7 +37,7 @@ from ptb_word_lm import LargeConfig
 
 flags = tf.flags
 
-flags.DEFINE_string("scale", "small", "A type of model. Possible options are: small, medium, large.")
+flags.DEFINE_string("scale", "large", "A type of model. Possible options are: small, medium, large.")
 flags.DEFINE_string("dataset", "simple-examples/data/", "Where the training/test data is stored.")
 flags.DEFINE_string("weight", "model/", "Pretrained weights")
 flags.DEFINE_bool("fp16", False,
@@ -211,8 +211,8 @@ def main(_):
     # auto load checkpoint form specific path
     sv = tf.train.Supervisor(logdir=FLAGS.weight)
     with sv.managed_session() as session:
-        #test_perplexity = run_epoch(session, mtest)
-      test_perplexity = 0
+      test_perplexity = run_epoch(session, mtest)
+      #test_perplexity = 0
       print("Test Perplexity: %.3f, elapsed time: %.f s" % (test_perplexity, time.time()-start_time))
         
 if __name__ == "__main__":
