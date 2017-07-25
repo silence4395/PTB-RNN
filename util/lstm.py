@@ -57,7 +57,7 @@ class BasicLSTMCell(RNNCell):
   that follows.
   """
 
-  def __init__(self, num_units, forget_bias=1.0,
+  def __init__(self, num_units, forget_bias=1.0, lstm_type='origin',
                state_is_tuple=True, activation=None, reuse=None):
     """Initialize the basic LSTM cell.
 
@@ -85,6 +85,7 @@ class BasicLSTMCell(RNNCell):
     self._forget_bias = forget_bias
     self._state_is_tuple = state_is_tuple
     self._activation = activation or math_ops.tanh
+    self._lstm_type = lstm_type
 
   @property
   def state_size(self):
@@ -126,9 +127,10 @@ class BasicLSTMCell(RNNCell):
     i, j, f, o = array_ops.split(value=concat, num_or_size_splits=4, axis=1)
     
     # optional 'sigmoid_diy' 'tanh_diy' 'sigmoid_tanh_diy' 'origin'
-    op = 'tanh_diy'
+    #op = 'tanh_diy'
     
-    for case in Switch(op):
+    #for case in Switch(op):
+    for case in Switch(self._lstm_type):
       if case('origin'):
         new_c = (
           c * sigmoid(f + self._forget_bias) + sigmoid(i) * self._activation(j))

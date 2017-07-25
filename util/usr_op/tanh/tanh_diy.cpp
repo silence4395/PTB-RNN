@@ -40,10 +40,11 @@ public:
     enum op_types {
       TANH = 0,
       PLAN = 1,
-      EXPONENT = 2
+      EXPONENT = 2,
+      AREAS = 3
     }op_type;
     
-    op_type  = TANH;
+    op_type = AREAS;
     
     switch (op_type) {
     case TANH:
@@ -68,12 +69,7 @@ public:
 	      tmp_data = 1;
 	      
 	    if (input(i) >= 0)
-	      {
-		if (tmp_data == 1)
-		  output(i) = 1;
-		else
-		  output(i) = 2 * tmp_data - 1;
-	      }
+	      output(i) = 2 * tmp_data - 1;
 	    else
 	      {
 		if (tmp_data == 1)
@@ -88,6 +84,40 @@ public:
       {
 	for (int i = 0; i < N; i++) {
 	  output(i) = 1 - 2/(1 + pow(2, 3 * input(i)));
+	}
+	break;
+      }
+    case AREAS: // 89.187
+      {
+	for (int i = 0; i < N; i++) {
+	  if (fabs(input(i)) > 0 && fabs(input(i)) <= 0.5)
+	    tmp_data = 0.22830 * fabs(input(i)) * 2 + 0.50596;
+	  else if (fabs(input(i)) > 0.5 && fabs(input(i)) <= 1)
+	    tmp_data = 0.14945 * fabs(input(i)) * 2 + 0.58948;
+	  else if (fabs(input(i)) > 1 && fabs(input(i)) <= 1.5)
+	    tmp_data = 0.06749 * fabs(input(i)) * 2 + 0.75292;
+	  else if (fabs(input(i)) > 1.5 && fabs(input(i)) <= 2)
+	    tmp_data = 0.02739 * fabs(input(i)) * 2 + 0.87367;
+	  else if (fabs(input(i)) > 2 && fabs(input(i)) <= 2.5)
+	    tmp_data = 0.01046 * fabs(input(i)) * 2 + 0.94147;
+	  else if (fabs(input(i)) > 2.5 && fabs(input(i)) <= 3)
+	    tmp_data = 0.00390 * fabs(input(i)) * 2 + 0.97428;
+	  else if (fabs(input(i)) > 3 && fabs(input(i)) <= 3.5)
+	    tmp_data = 0.00144 * fabs(input(i)) * 2 + 0.98905;
+	  else if (fabs(input(i)) > 3.5 && fabs(input(i)) <= 4)
+	    tmp_data = 0.00053 * fabs(input(i)) * 2 + 0.99543;
+	  else if (fabs(input(i)) > 4 )
+	    tmp_data = 1;
+	  
+	  if (input(i) >= 0)
+	    output(i) = 2 * tmp_data - 1;
+	  else
+	    {
+	      if (tmp_data == 1)
+		output(i) = 0;
+	      else
+		output(i) = 1 - 2 * tmp_data;
+	    }
 	}
 	break;
       }

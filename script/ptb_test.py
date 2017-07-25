@@ -42,6 +42,8 @@ flags.DEFINE_string("dataset", "simple-examples/data/", "Where the training/test
 flags.DEFINE_string("weight", "model/", "Pretrained weights")
 flags.DEFINE_bool("fp16", False,
                   "Train using 16-bit floats instead of 32bit floats")
+flags.DEFINE_string("lstm_type", "origin",
+                    "Set LSTM use activation function type")
 
 FLAGS = flags.FLAGS
 
@@ -70,11 +72,11 @@ class PTBModel(object):
       if 'reuse' in inspect.getargspec(
           BasicLSTMCell.__init__).args:
         return BasicLSTMCell(
-            size, forget_bias=0.0, state_is_tuple=True,
-            reuse=tf.get_variable_scope().reuse)
+            size, forget_bias=0.0, lstm_type=FLAGS.lstm_type,
+            state_is_tuple=True, reuse=tf.get_variable_scope().reuse)
       else:
         return BasicLSTMCell(
-            size, forget_bias=0.0, state_is_tuple=True)
+            size, forget_bias=0.0, lstm_type=FLAGS.lstm_type, state_is_tuple=True)
     attn_cell = lstm_cell
     if is_training and config.keep_prob < 1:
       def attn_cell():
