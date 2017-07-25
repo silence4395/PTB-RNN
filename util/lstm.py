@@ -20,6 +20,28 @@ from tensorflow.python.ops.rnn_cell_impl import LSTMStateTuple
 from tensorflow.python.ops.rnn_cell_impl import _linear
 from tensorflow.python.framework import ops
 
+# define switch class
+class Switch(object):
+  def __init__(self, value):
+    self.value = value
+    self.fall = False
+  
+  def __iter__(self):
+    """Retrun the match method once, then stop"""
+    yield self.match
+    raise StopIteration
+  
+  def match(self, *args):
+    """Indicate whether or not to enter a casr suite"""
+    if self.fall or not args:
+      return True
+    elif self.value in args:
+      self.fall = True
+      return True
+    else:
+      return False
+
+# define LSTM cell
 class BasicLSTMCell(RNNCell):
   """Basic LSTM recurrent network cell.
 
@@ -89,7 +111,8 @@ class BasicLSTMCell(RNNCell):
         `state_is_tuple`).
     """
     sigmoid = math_ops.sigmoid
-    lib_diy = tf.load_op_library('util/usr_op/sigmoid_diy.so')
+    lib_diy_0 = tf.load_op_library('util/usr_op/sigmoid_diy.so')
+    lib_diy_1 = tf.load_op_library('util/usr_op/tanh/tanh_diy.so')
     
     # Parameters of gates are concatenated into one multiply for efficiency.
     if self._state_is_tuple:
@@ -101,17 +124,33 @@ class BasicLSTMCell(RNNCell):
 
     # i = input_gate, j = new_input, f = forget_gate, o = output_gate
     i, j, f, o = array_ops.split(value=concat, num_or_size_splits=4, axis=1)
-        
-    # modify by zhluo, 7/21/2017
-    new_c = (
-        c * lib_diy.sigmoid_diy(f + self._forget_bias) +
-        lib_diy.sigmoid_diy(i) * self._activation(j))
     
-    new_h = self._activation(new_c) * lib_diy.sigmoid_diy(o)
-      
-    #new_c = (
-    #    c * sigmoid(f + self._forget_bias) + sigmoid(i) * self._activation(j))
-    #new_h = self._activation(new_c) * sigmoid(o)
+    # optional 'sigmoid_diy' 'tanh_diy' 'sigmoid_tanh_diy' 'origin'
+    op = 'tanh_diy'
+    
+    for case in Switch(op):
+      if case('origin'):
+        new_c = (
+          c * sigmoid(f + self._forget_bias) + sigmoid(i) * self._activation(j))
+        new_h = self._activation(new_c) * sigmoid(o)
+        break
+      if case('sigmoid_diy'):
+        new_c = (
+          c * lib_diy_0.sigmoid_diy(f + self._forget_bias) + lib_diy_0.sigmoid_diy(i) * self._activation(j))
+        new_h = self._activation(new_c) * lib_diy_0.sigmoid_diy(o)
+        break
+      if case('tanh_diy'):
+        new_c = (
+          c * sigmoid(f + self._forget_bias) + sigmoid(i) * lib_diy_1.tanh_diy(j))
+        new_h = lib_diy_1.tanh_diy(new_c) * sigmoid(o)
+        break
+      if case('sigmoid_tanh_diy'):
+        new_c = (
+          c * lib_diy_0.sigmoid_diy(f + self._forget_bias) + lib_diy_0.sigmoid_diy(i) * lib_diy_1.tanh_diy(j))
+        new_h = lib_diy_1.tanh_diy(new_c) * lib_diy_0.sigmoid_diy(o)
+        break
+      if case():
+        print("[ Error ] please set LSTM function operation type")
 
     if self._state_is_tuple:
       new_state = LSTMStateTuple(new_c, new_h)

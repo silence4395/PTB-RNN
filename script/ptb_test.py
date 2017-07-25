@@ -213,7 +213,7 @@ def main(_):
     with sv.managed_session() as session:
       test_perplexity = run_epoch(session, mtest)
       #test_perplexity = 0
-      print("Test Perplexity: %.3f, elapsed time: %.f s" % (test_perplexity, time.time()-start_time))
+      print("[ Info ]Test Perplexity: %.3f, elapsed time: %.f s" % (test_perplexity, time.time()-start_time))
         
 if __name__ == "__main__":
     tf.app.run()
