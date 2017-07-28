@@ -41,10 +41,11 @@ public:
       TANH = 0,
       PLAN = 1,
       EXPONENT = 2,
-      AREAS = 3
+      AREAS = 3,
+      PLAN_LUT = 4
     }op_type;
     
-    op_type = AREAS;
+    op_type = PLAN_LUT;
     
     switch (op_type) {
     case TANH:
@@ -55,7 +56,7 @@ public:
 	  }
 	break;
       }
-    case PLAN:   // 102.282
+    case PLAN:   // 79.200
       {
 	for (int i = 0; i < N; i++)
 	  {
@@ -68,15 +69,11 @@ public:
 	    else
 	      tmp_data = 1;
 	      
+	    tmp_data = 2 * tmp_data - 1;
 	    if (input(i) >= 0)
-	      output(i) = 2 * tmp_data - 1;
+	      output(i) = tmp_data;
 	    else
-	      {
-		if (tmp_data == 1)
-		  output(i) = 0;
-		else
-		  output(i) = 1 - 2 * tmp_data;
-	      }
+	      output(i) = -tmp_data;
 	  }
 	break;
       }
@@ -87,38 +84,88 @@ public:
 	}
 	break;
       }
-    case AREAS: // 89.187
+    case AREAS: // 78.913
       {
 	for (int i = 0; i < N; i++) {
-	  if (fabs(input(i)) > 0 && fabs(input(i)) <= 0.5)
-	    tmp_data = 0.22830 * fabs(input(i)) * 2 + 0.50596;
+	  if (fabs(input(i)) >= 0 && fabs(input(i)) <= 0.5)
+	    tmp_data = 0.92426 * fabs(input(i)) + 0.00916;
 	  else if (fabs(input(i)) > 0.5 && fabs(input(i)) <= 1)
-	    tmp_data = 0.14945 * fabs(input(i)) * 2 + 0.58948;
+	    tmp_data = 0.58536 * fabs(input(i)) + 0.18831;
 	  else if (fabs(input(i)) > 1 && fabs(input(i)) <= 1.5)
-	    tmp_data = 0.06749 * fabs(input(i)) * 2 + 0.75292;
+	    tmp_data = 0.27596 * fabs(input(i)) + 0.49836;
 	  else if (fabs(input(i)) > 1.5 && fabs(input(i)) <= 2)
-	    tmp_data = 0.02739 * fabs(input(i)) * 2 + 0.87367;
+	    tmp_data = 0.11226 * fabs(input(i)) + 0.74267;
 	  else if (fabs(input(i)) > 2 && fabs(input(i)) <= 2.5)
-	    tmp_data = 0.01046 * fabs(input(i)) * 2 + 0.94147;
+	    tmp_data = 0.04292 * fabs(input(i)) + 0.88056;
 	  else if (fabs(input(i)) > 2.5 && fabs(input(i)) <= 3)
-	    tmp_data = 0.00390 * fabs(input(i)) * 2 + 0.97428;
+	    tmp_data = 0.01602 * fabs(input(i)) + 0.94747;
 	  else if (fabs(input(i)) > 3 && fabs(input(i)) <= 3.5)
-	    tmp_data = 0.00144 * fabs(input(i)) * 2 + 0.98905;
+	    tmp_data = 0.00592 * fabs(input(i)) + 0.97762;
 	  else if (fabs(input(i)) > 3.5 && fabs(input(i)) <= 4)
-	    tmp_data = 0.00053 * fabs(input(i)) * 2 + 0.99543;
-	  else if (fabs(input(i)) > 4 )
+	    tmp_data = 0.00218 * fabs(input(i)) + 0.99066;
+	  else if (fabs(input(i)) > 4 && fabs(input(i)) <= 4.5)
+	    tmp_data = 0.00080 * fabs(input(i)) + 0.99616;
+	  else if (fabs(input(i)) > 4.5 && fabs(input(i)) <= 5)
+	    tmp_data = 0.00030 * fabs(input(i)) + 0.99844;
+	  else if (fabs(input(i)) > 5)
 	    tmp_data = 1;
 	  
-	  if (input(i) >= 0)
-	    output(i) = 2 * tmp_data - 1;
+	  if (input(i) == 0)
+	    output(i) = 0;
+	  else if (input(i) > 0)
+	    output(i) = tmp_data;
 	  else
-	    {
-	      if (tmp_data == 1)
-		output(i) = 0;
-	      else
-		output(i) = 1 - 2 * tmp_data;
-	    }
+	    output(i) =  -tmp_data;
 	}
+	break;
+      }
+    case PLAN_LUT: // 77.929
+      {
+	const int LUT_NO = 64;
+	double lut_data[64];
+	float base_addr = 0;
+	
+	base_addr = (4 - 1.1875) / LUT_NO;
+	// statistical error between PLAN and sigmoid(2.375~5, 5~10 or 5~20)
+	for (int m = 0; m < LUT_NO; ++m) {
+	  if ((1.1875 + base_addr * m) < 2.5)
+	    lut_data[m] = 2/(1 + exp(-2 * (1.1875 + base_addr * m))) - 1 -
+	      (0.03125*(1.1875 + base_addr * m)*2 + 0.84375);
+	  else
+	    lut_data[m] = 2/(1 + exp(-2 * (1.1875 + base_addr * m))) - 1 - 1;
+	}
+	
+	// >>>>>>>
+	for (int i = 0; i < N; i++)
+	  {
+	    // PLAN
+	    if (fabs(input(i)) >= 0 && fabs(input(i)) <0.5)
+	      tmp_data = 0.25*fabs(input(i)*2) + 0.5;
+	    else if (fabs(input(i)) >= 0.5 && fabs(input(i)) < 1.1875)
+	      tmp_data = 0.125*fabs(input(i)*2) + 0.625;
+	    else if (fabs(input(i)) >= 1.1875 && fabs(input(i)) < 2.5)
+	      tmp_data = 0.03125*fabs(input(i)*2) + 0.84375;
+	    else
+	      tmp_data = 1;
+	    
+	    // LUT
+	    if (fabs(input(i)) >= 1.1875 && fabs(input(i)) < 4) {
+	      float addr_mod = fmod(float(fabs(input(i)) - 1.1875), base_addr);
+	      int tmp_addr = float(fabs(input(i)) - 1.1875) / base_addr;
+	      if (addr_mod == 0)
+		tmp_data = tmp_data + lut_data[tmp_addr];
+	      else {
+		tmp_addr = ceil(tmp_addr);
+		tmp_data = tmp_data + (lut_data[tmp_addr] + lut_data[tmp_addr-1])/2;
+	      }
+	    }
+	    
+	    tmp_data = 2 * tmp_data - 1;
+	    if (input(i) >= 0)
+	      output(i) = tmp_data;
+	    else
+	      output(i) = -tmp_data;
+	  }
 	break;
       }
     default:

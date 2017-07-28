@@ -39,17 +39,19 @@ public:
     float max_value = -9999999999;
     float min_value = 999999999;
     float tmp_data = 0.0;
+    
     enum op_types {
       SIGMOID = 0,
       PLAN = 1,
       SONF = 2,
       INTERPOLATION = 3,
       EXPONENT = 4,
-      AREAS = 5
+      AREAS = 5,
+      PLAN_LUT = 6
     } op_type;
     
     // set function type, 
-    op_type = AREAS;
+    op_type = PLAN_LUT;
     
     switch(op_type){
     case SIGMOID:    // 78.793
@@ -190,6 +192,58 @@ public:
 	  else
 	    output(i) = 1 - tmp_data;
 	}
+	break;
+      }
+    case PLAN_LUT: // 78.754
+      { 
+	const int LUT_NO = 64;
+	double lut_data[64];
+	float base_addr = 0;
+    
+	base_addr = (8 - 2.375) / LUT_NO;
+	// statistical error between PLAN and sigmoid(2.375~5, 5~10 or 5~20)
+	for (int m = 0; m < LUT_NO; ++m) {
+	  if ((2.375 + base_addr * m) < 5)
+	    lut_data[m] = 1/(1+exp(-(2.375 + base_addr * m))) -
+	      (0.03125*(2.375 + base_addr * m) + 0.84375);
+	  else
+	    lut_data[m] = 1/(1+exp(-(2.375 + base_addr * m))) - 1;
+	  //LOG(INFO) << " [ Info ] lut addr: " << 2.375 + base_addr * m << ", lut_data: " << lut_data[m];
+	}
+	
+	// >>>>> 
+	for (int i = 0; i < N; i++){
+	  // PLAN
+	  if (fabs(input(i)) >= 0 && fabs(input(i)) <1)
+	    tmp_data = 0.25*fabs(input(i)) + 0.5;
+	  else if (fabs(input(i)) >= 1 && fabs(input(i)) < 2.375)
+	    tmp_data = 0.125*fabs(input(i)) + 0.625;
+	  else if (fabs(input(i)) >= 2.375 && fabs(input(i)) < 5)
+	    tmp_data = 0.03125*fabs(input(i)) + 0.84375;
+	  else
+	    tmp_data = 1;
+	  
+	  // LUT
+	  if (fabs(input(i)) >= 2.375 && fabs(input(i)) < 8) {
+	    float addr_mod = fmod(float(fabs(input(i)) - 2.375), base_addr);
+	    int tmp_addr = float(fabs(input(i)) - 2.375) / base_addr;
+	    if (addr_mod == 0)
+	      tmp_data = tmp_data + lut_data[tmp_addr];
+	    else {
+	      tmp_addr = ceil(tmp_addr);
+	      tmp_data = tmp_data + (lut_data[tmp_addr] + lut_data[tmp_addr-1])/2;
+	    }
+	  }
+	  
+	   //LOG(INFO) << " [ Info ] sigmoid data: " << tmp_data;
+	  
+	  // final result
+	  if (input(i) >= 0)
+	    output(i) = tmp_data;
+	  else
+	    output(i) = 1 - tmp_data;
+	}
+	
 	break;
       }
     default:
