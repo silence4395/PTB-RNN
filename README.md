@@ -1,4 +1,4 @@
-#Introduction
+# Introduction
 
 Take a look at this great article for an introduction to recurrent neural networks and LSTMs in particular.
 
@@ -10,7 +10,7 @@ Language modeling is key to many interesting problems such as speech recognition
 
 For the purpose of this tutorial, we will reproduce the results from Zaremba et al., 2014 (pdf), which achieves very good quality on the PTB dataset.
 
-#Tutorial Files
+# Tutorial Files
 
 This tutorial references the following files from models/tutorials/rnn/ptb in the TensorFlow models repo:
 
@@ -23,9 +23,9 @@ The data required for this tutorial is in the data/ directory of the PTB dataset
 
 The dataset is already preprocessed and contains overall 10000 different words, including the end-of-sentence marker and a special symbol (\<unk>) for rare words. In reader.py, we convert each word to a unique integer identifier, in order to make it easy for the neural network to process the data.
 
-#The Model
+# The Model
 
-##LSTM
+## LSTM
 
 The core of the model consists of an LSTM cell that processes one word at a time and computes probabilities of the possible values for the next word in the sentence. The memory state of the network is initialized with a vector of zeros and gets updated after reading each word. For computational reasons, we will process data in mini-batches of size batch_size.
 
