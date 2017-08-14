@@ -4,14 +4,17 @@
 # author: zhihui.luo@ingenic.com
 #
 # Parameters config:
-# Sigmoid optional value: SIGMOID PLAN SONF INTERPOLATION EXPONENT AREAS PLAN_LUT LUT_BIT_LEVEL
-# Tanh optional value: TANH PLAN EXPONENT AREAS PLAN_LUT LUT_BIT_LEVEL
-# LSTM activation type: origin sigmoid_diy tanh_diy sigmoid_tanh_diy
+# Sigmoid optional value:
+#     SIGMOID PLAN SONF INTERPOLATION EXPONENT AREAS PLAN_LUT LUT_BIT_LEVEL_004 LUT_BIT_LEVEL_001
+# Tanh optional value:
+#     TANH PLAN EXPONENT AREAS PLAN_LUT LUT_BIT_LEVEL_004 LUT_BIT_LEVEL_001
+# LSTM activation type:
+#     origin sigmoid_diy tanh_diy sigmoid_tanh_diy
 #
 ####################################################
 
-sigmoid_type=LUT_BIT_LEVEL
-tanh_type=LUT_BIT_LEVEL
+sigmoid_type=LUT_BIT_LEVEL_001
+tanh_type=LUT_BIT_LEVEL_001
 lstm_type=sigmoid_tanh_diy
 
 # function for change sigmoid type
