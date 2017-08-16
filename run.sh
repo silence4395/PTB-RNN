@@ -13,9 +13,9 @@
 #
 ####################################################
 
-sigmoid_type=LUT_BIT_LEVEL_001
-tanh_type=LUT_BIT_LEVEL_001
-lstm_type=sigmoid_tanh_diy
+sigmoid_type=AREAS
+tanh_type=AREAS
+lstm_type=tanh_diy
 
 # function for change sigmoid type
 function SetSigmoidType()
@@ -38,7 +38,7 @@ function SetTanhType()
 }
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-cd util/usr_op
+cd activation_util/sigmoid
 SetSigmoidType $sigmoid_type
 ./compile.sh |& tee log
 
@@ -54,7 +54,7 @@ grep "op_type ="  sigmoid_diy.cpp
 echo "Sigmoid compiler done!"
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-cd tanh/
+cd ../tanh/
 SetTanhType $tanh_type
 ./compile.sh |& tee log
 
@@ -73,5 +73,5 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo "LSTM mode: $lstm_type"
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 
-cd ../../../
+cd ../../
 ./script/ptb_test.py --lstm_type=$lstm_type
