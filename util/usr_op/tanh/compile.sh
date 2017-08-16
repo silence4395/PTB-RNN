@@ -1,1 +1,0 @@
-g++ -std=c++11 -shared tanh_diy.cpp  -o tanh_diy.so -fPIC -I /usr/local/lib/python2.7/dist-packages/tensorflow/include
