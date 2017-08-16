@@ -23,7 +23,7 @@ this_dir = osp.dirname(__file__)
 lib_path = osp.join(this_dir, '..', 'src')
 add_path(lib_path)
 
-lib_path = osp.join(this_dir, '..', 'util')
+lib_path = osp.join(this_dir, '..', 'activation_util')
 add_path(lib_path)
 
 import reader
