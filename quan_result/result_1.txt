@@ -1,0 +1,76 @@
+LSTM_DIY_TYPE        APPROXIMATE_TYPE           BIT_WIDTH   FRACTION   ACCURACY
+tanh_diy             LUT_BIT_LEVEL_004              32         23         79.6980000000
+tanh_diy             LUT_BIT_LEVEL_004_quan         8          3          78.1990000000
+tanh_diy             LUT_BIT_LEVEL_004_quan         16         11         79.7120000000
+tanh_diy             LUT_BIT_LEVEL_004_quan         24         19         79.6980000000
+=====================================
+tanh_diy             LUT_BIT_LEVEL_001              32         23         78.9580000000
+tanh_diy             LUT_BIT_LEVEL_001_quan         8          3          nan
+tanh_diy             LUT_BIT_LEVEL_001_quan         16         11         78.9760000000
+tanh_diy             LUT_BIT_LEVEL_001_quan         24         19         78.9580000000
+=====================================
+tanh_diy             DCT_LUT_6                      32         23         78.4790000000
+tanh_diy             DCT_LUT_6_quan                 8          3          nan
+tanh_diy             DCT_LUT_6_quan                 16         11         78.4880000000
+tanh_diy             DCT_LUT_6_quan                 24         19         78.4800000000
+=====================================
+tanh_diy             DCT_LUT_6_PLUS                 32         23         78.9460000000
+tanh_diy             DCT_LUT_6_PLUS_quan            8          3          nan
+tanh_diy             DCT_LUT_6_PLUS_quan            16         11         78.9490000000
+tanh_diy             DCT_LUT_6_PLUS_quan            24         19         78.9460000000
+=====================================
+tanh_diy             AREAS                          32         23         78.6650000000
+tanh_diy             AREAS_quan                     8          4          77.7000000000
+tanh_diy             AREAS_quan                     16         12         78.5730000000
+tanh_diy             AREAS_quan                     24         20         78.5660000000
+=====================================
+sigmoid_diy          LUT_BIT_LEVEL_004              32         23         78.7720000000
+sigmoid_diy          LUT_BIT_LEVEL_004_quan         8          3          81.4920000000
+sigmoid_diy          LUT_BIT_LEVEL_004_quan         16         11         78.7590000000
+sigmoid_diy          LUT_BIT_LEVEL_004_quan         24         19         78.7720000000
+=====================================
+sigmoid_diy          LUT_BIT_LEVEL_001              32         23         78.7770000000
+sigmoid_diy          LUT_BIT_LEVEL_001_quan         8          3          nan
+sigmoid_diy          LUT_BIT_LEVEL_001_quan         16         11         78.7600000000
+sigmoid_diy          LUT_BIT_LEVEL_001_quan         24         19         78.7770000000
+=====================================
+sigmoid_diy          DCT_LUT_6                      32         23         79.6140000000
+sigmoid_diy          DCT_LUT_6_quan                 8          3          nan
+sigmoid_diy          DCT_LUT_6_quan                 16         11         79.6150000000
+sigmoid_diy          DCT_LUT_6_quan                 24         19         79.6130000000
+=====================================
+sigmoid_diy          DCT_LUT_6_PLUS                 32         23         78.7790000000
+sigmoid_diy          DCT_LUT_6_PLUS_quan            8          3          nan
+sigmoid_diy          DCT_LUT_6_PLUS_quan            16         11         78.7750000000
+sigmoid_diy          DCT_LUT_6_PLUS_quan            24         19         78.7790000000
+=====================================
+sigmoid_diy          AREAS                          32         23         78.8080000000
+sigmoid_diy          AREAS_quan                     8          4          94.2490000000
+sigmoid_diy          AREAS_quan                     16         12         78.8090000000
+sigmoid_diy          AREAS_quan                     24         20         78.8050000000
+=====================================
+sigmoid_tanh_diy     LUT_BIT_LEVEL_004              32         23         79.6720000000
+sigmoid_tanh_diy     LUT_BIT_LEVEL_004_quan         8          3          79.2320000000
+sigmoid_tanh_diy     LUT_BIT_LEVEL_004_quan         16         11         79.6740000000
+sigmoid_tanh_diy     LUT_BIT_LEVEL_004_quan         24         19         79.6740000000
+=====================================
+sigmoid_tanh_diy     LUT_BIT_LEVEL_001              32         23         78.9410000000
+sigmoid_tanh_diy     LUT_BIT_LEVEL_001_quan         8          3          nan
+sigmoid_tanh_diy     LUT_BIT_LEVEL_001_quan         16         11         78.9430000000
+sigmoid_tanh_diy     LUT_BIT_LEVEL_001_quan         24         19         78.9420000000
+=====================================
+sigmoid_tanh_diy     DCT_LUT_6                      32         23         79.3170000000
+sigmoid_tanh_diy     DCT_LUT_6_quan                 8          3          nan
+sigmoid_tanh_diy     DCT_LUT_6_quan                 16         11         79.3270000000
+sigmoid_tanh_diy     DCT_LUT_6_quan                 24         19         79.3150000000
+=====================================
+sigmoid_tanh_diy     DCT_LUT_6_PLUS                 32         23         78.9330000000
+sigmoid_tanh_diy     DCT_LUT_6_PLUS_quan            8          3          nan
+sigmoid_tanh_diy     DCT_LUT_6_PLUS_quan            16         11         78.9300000000
+sigmoid_tanh_diy     DCT_LUT_6_PLUS_quan            24         19         78.9330000000
+=====================================
+sigmoid_tanh_diy     AREAS                          32         23         78.6830000000
+sigmoid_tanh_diy     AREAS_quan                     8          4          90.4650000000
+sigmoid_tanh_diy     AREAS_quan                     16         12         78.5940000000
+sigmoid_tanh_diy     AREAS_quan                     24         20         78.5830000000
+=====================================

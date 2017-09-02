@@ -13,12 +13,13 @@
 #     origin sigmoid_diy tanh_diy sigmoid_tanh_diy
 #
 ####################################################
-bit_width=16
-fraction_length=12
+lstm_type=$1
 
-sigmoid_type=AREAS
-tanh_type=AREAS
-lstm_type=tanh_diy
+sigmoid_type=$2
+tanh_type=$2
+
+bit_width=$3
+fraction_length=$4
 
 # function for change sigmoid type
 function SetSigmoidType()
@@ -110,4 +111,4 @@ echo "LSTM mode: $lstm_type"
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 
 cd ../../
-./script/ptb_test.py --lstm_type=$lstm_type
+./script/ptb_test.py --lstm_type=$lstm_type |& tee log

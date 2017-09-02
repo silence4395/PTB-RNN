@@ -207,7 +207,7 @@ def main(_):
             mtest = PTBModel(is_training=False, config=eval_config, input_=test_input)
     
     # constraint GPU memory use
-    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.333)
+    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.2)
     sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
     
     # auto load checkpoint form specific path
